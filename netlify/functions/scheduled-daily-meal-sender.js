@@ -61,24 +61,24 @@ const handler = async (event, context) => {
       console.log('Message also sent to Sanjana');
     }
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        success: true,
-        message: 'Daily meal suggestions sent successfully',
-        date: tomorrowDate
-      })
-    };
+    return new Response(JSON.stringify({
+      success: true,
+      message: 'Daily meal suggestions sent successfully',
+      date: tomorrowDate
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
 
   } catch (error) {
     console.error('Error in scheduled meal sender:', error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
-        success: false,
-        error: error.message
-      })
-    };
+    return new Response(JSON.stringify({
+      success: false,
+      error: error.message
+    }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 };
 
