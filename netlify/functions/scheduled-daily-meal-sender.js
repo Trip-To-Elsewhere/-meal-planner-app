@@ -13,7 +13,8 @@ const handler = async (event, context) => {
     const mealHistory = null; // For now, no history
 
     // Step 1: Generate meal suggestions using AI
-    const suggestionsResponse = await fetch(`${process.env.URL}/.netlify/functions/daily-meal-suggestions`, {
+    const baseUrl = process.env.URL || 'https://guileless-profiterole-00a671.netlify.app';
+    const suggestionsResponse = await fetch(`${baseUrl}/.netlify/functions/daily-meal-suggestions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -22,7 +23,8 @@ const handler = async (event, context) => {
       })
     });
 
-    const { suggestions } = await suggestionsResponse.json();
+    const suggestionsData = await suggestionsResponse.json();
+    const suggestions = suggestionsData.suggestions;
 
     if (!suggestions) {
       throw new Error('Failed to generate meal suggestions');
@@ -31,7 +33,7 @@ const handler = async (event, context) => {
     console.log('Generated meal suggestions for:', tomorrowDate);
 
     // Step 2: Send via WhatsApp
-    const whatsappResponse = await fetch(`${process.env.URL}/.netlify/functions/send-whatsapp-suggestions`, {
+    const whatsappResponse = await fetch(`${baseUrl}/.netlify/functions/send-whatsapp-suggestions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -50,7 +52,7 @@ const handler = async (event, context) => {
 
     // Optional: Send to Sanjana as well
     if (process.env.SANJANA_PHONE_NUMBER) {
-      await fetch(`${process.env.URL}/.netlify/functions/send-whatsapp-suggestions`, {
+      await fetch(`${baseUrl}/.netlify/functions/send-whatsapp-suggestions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
