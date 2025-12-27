@@ -85,7 +85,7 @@ Respond in this JSON format:
 Use actual meal names from the database. Be specific and practical.`;
 
     const message = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-latest',
+      model: 'claude-3-7-sonnet-20250219',
       max_tokens: 2500,
       temperature: 0.8,
       messages: [{
