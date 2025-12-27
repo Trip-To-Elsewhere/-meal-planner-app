@@ -5,76 +5,52 @@ const client = twilio(
   process.env.TWILIO_AUTH_TOKEN
 );
 
-// Format meal suggestions as WhatsApp message
+// Format meal suggestions as WhatsApp message (compact version < 1600 chars)
 function formatWhatsAppMessage(suggestions) {
-  const { date, dayOfWeek, motivation, suggestions: meals, dailyCalorieRange, nutritionTip } = suggestions;
+  const { date, dayOfWeek, motivation, suggestions: meals, dailyCalorieRange } = suggestions;
 
-  let message = `🌙 *Good Evening!* 🌙\n\n`;
-  message += `*Tomorrow's Meal Plan* - ${dayOfWeek}\n`;
-  message += `${new Date(date).toLocaleDateString('en-IN', { day: 'numeric', month: 'long' })}\n\n`;
-  message += `💪 *${motivation}*\n\n`;
-  message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+  let message = `🌙 *${dayOfWeek}'s Menu*\n`;
+  message += `💪 ${motivation}\n\n`;
 
   // Morning Drink
-  message += `☀️ *MORNING DRINK*\n`;
-  meals.morningDrink.forEach((option, idx) => {
-    message += `${idx + 1}. ${option.name} (${option.calories} kcal)\n`;
-    message += `   _${option.why}_\n`;
+  message += `☀️ *MORNING*\n`;
+  meals.morningDrink.forEach((opt, i) => {
+    message += `${i + 1}. ${opt.name} (${opt.calories}cal)\n`;
   });
-  message += `\n`;
 
   // Breakfast
-  message += `🍳 *BREAKFAST*\n`;
-  meals.breakfast.forEach((option, idx) => {
-    message += `${idx + 1}. ${option.name}\n`;
-    message += `   ${option.calories} kcal | Protein: ${option.protein}g\n`;
-    message += `   _${option.why}_\n`;
+  message += `\n🍳 *BREAKFAST*\n`;
+  meals.breakfast.forEach((opt, i) => {
+    message += `${i + 1}. ${opt.name} (${opt.calories}cal, ${opt.protein}g)\n`;
   });
-  message += `\n`;
 
   // Lunch
-  message += `🍛 *LUNCH*\n`;
-  meals.lunch.forEach((option, idx) => {
-    message += `${idx + 1}. ${option.name}\n`;
-    message += `   ${option.calories} kcal | Protein: ${option.protein}g\n`;
-    message += `   _${option.why}_\n`;
+  message += `\n🍛 *LUNCH*\n`;
+  meals.lunch.forEach((opt, i) => {
+    message += `${i + 1}. ${opt.name} (${opt.calories}cal, ${opt.protein}g)\n`;
   });
-  message += `\n`;
 
   // Evening Snack
-  message += `☕ *EVENING SNACK*\n`;
-  meals.eveningSnack.forEach((option, idx) => {
-    message += `${idx + 1}. ${option.name}\n`;
-    message += `   ${option.calories} kcal | Protein: ${option.protein}g\n`;
-    message += `   _${option.why}_\n`;
+  message += `\n☕ *SNACK*\n`;
+  meals.eveningSnack.forEach((opt, i) => {
+    message += `${i + 1}. ${opt.name} (${opt.calories}cal)\n`;
   });
-  message += `\n`;
 
   // Dinner
-  message += `🍽 *DINNER*\n`;
-  meals.dinner.forEach((option, idx) => {
-    message += `${idx + 1}. ${option.name}\n`;
-    message += `   ${option.calories} kcal | Protein: ${option.protein}g\n`;
-    message += `   _${option.why}_\n`;
+  message += `\n🍽 *DINNER*\n`;
+  meals.dinner.forEach((opt, i) => {
+    message += `${i + 1}. ${opt.name} (${opt.calories}cal, ${opt.protein}g)\n`;
   });
-  message += `\n`;
 
-  // Night Drink (optional)
-  message += `🥛 *BEDTIME (Optional)*\n`;
-  meals.nightDrink.forEach((option, idx) => {
-    message += `${idx + 1}. ${option.name} (${option.calories} kcal)\n`;
-    message += `   _${option.why}_\n`;
+  // Night Drink
+  message += `\n🥛 *BEDTIME*\n`;
+  meals.nightDrink.forEach((opt, i) => {
+    message += `${i + 1}. ${opt.name} (${opt.calories}cal)\n`;
   });
-  message += `\n`;
 
-  message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
-  message += `📊 *Daily Range:* ${dailyCalorieRange}\n\n`;
-  message += `💡 *Tip:* ${nutritionTip}\n\n`;
-  message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
-  message += `*Reply with your choices:*\n`;
-  message += `Example: "1-2, 2-1, 3-2, 4-1, 5-3, 6-1"\n`;
-  message += `(Morning-Breakfast-Lunch-Snack-Dinner-Night)\n\n`;
-  message += `Or just reply with "Looks good!" to confirm all Option 1s 👍`;
+  message += `\n📊 ${dailyCalorieRange}\n`;
+  message += `\n*Reply:* "1-2, 2-1, 3-2, 4-1, 5-3, 6-1"\n`;
+  message += `Or "Looks good!" for all Option 1s 👍`;
 
   return message;
 }
