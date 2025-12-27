@@ -44,8 +44,10 @@ const handler = async (event, context) => {
 
     const whatsappResult = await whatsappResponse.json();
 
+    console.log('WhatsApp response:', JSON.stringify(whatsappResult));
+
     if (!whatsappResult.success) {
-      throw new Error('Failed to send WhatsApp message');
+      throw new Error(`Failed to send WhatsApp message: ${whatsappResult.error || 'Unknown error'}`);
     }
 
     console.log('WhatsApp message sent successfully:', whatsappResult.messageSid);
