@@ -152,13 +152,13 @@ const handler = async (event, context) => {
     } else {
       // Not a shopping day, skip
       console.log('Not a shopping day, skipping...');
-      return {
-        statusCode: 200,
-        body: JSON.stringify({
-          success: true,
-          message: 'Not a shopping day, no message sent'
-        })
-      };
+      return new Response(JSON.stringify({
+        success: true,
+        message: 'Not a shopping day, no message sent'
+      }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
 
     // Send to primary user
